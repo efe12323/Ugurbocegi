@@ -12,6 +12,7 @@
       --accent: #d9b88a;
       --text: #e8e8f0;
       --soft: #a89f8c;
+      --whatsapp: #25D366;
     }
     * {
       margin: 0;
@@ -139,23 +140,42 @@
     }
     .gold-accent { color: var(--gold); font-weight: 500; }
 
-    /* Mobil uyum iyileştirmeleri */
+    /* WhatsApp Sabit Buton */
+    .whatsapp-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--whatsapp);
+      color: white;
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+      text-decoration: none;
+      transition: all 0.3s;
+      z-index: 999;
+    }
+    .whatsapp-btn:hover {
+      transform: scale(1.15);
+      box-shadow: 0 10px 25px rgba(37,213,102,0.5);
+    }
+    .whatsapp-btn i {
+      font-style: normal; /* icon fontu yoksa */
+    }
+
+    /* Mobil uyum */
     @media (max-width: 768px) {
       .container { padding: 6vw 6vw; }
       header { padding: 15vh 0 10vh; }
-      .gallery {
-        flex-direction: column;
-        align-items: center;
-        gap: 3rem;
-      }
-      .gallery img {
-        max-width: 90vw;
-        height: auto;
-      }
-      .packages {
-        grid-template-columns: 1fr;
-      }
+      .gallery { flex-direction: column; align-items: center; gap: 3rem; }
+      .gallery img { max-width: 90vw; height: auto; }
+      .packages { grid-template-columns: 1fr; }
       .card { padding: 2.2rem 1.6rem; }
+      .whatsapp-btn { bottom: 15px; right: 15px; width: 60px; height: 60px; font-size: 2rem; }
     }
 
     @media (max-width: 480px) {
@@ -165,6 +185,7 @@
       .quote { font-size: clamp(1.4rem, 6vw, 1.8rem); }
     }
   </style>
+  <!-- WhatsApp icon için basit emoji veya fontawesome kullanabilirsin, burada emoji kullandım -->
 </head>
 <body>
 
@@ -176,7 +197,6 @@
     </header>
 
     <div class="gallery">
-      <!-- Kendi fotoğraflarının linklerini buraya koy -->
       <img src="https://i.hizliresim.com/1ox1f7u.jpg" alt="Berat">
 
       <img src="https://i.hizliresim.com/mfn284i.jpg" alt="Berat">
@@ -185,7 +205,7 @@
     </div>
 
     <div class="intro">
-      <p>175 cm boyu, 65 kg zarif yapısı ve doğal karizmasıyla Berat, sadece bir eşlik değil – gerçek bir bağ kurmayı seven biri. "Uğur Böceği" lakabı boşuna değil: Yanında olduğunuzda şansınız döner, kalp atışlarınız hızlanır.</p>
+      <p>180 cm boyu, 65 kg zarif yapısı ve doğal karizmasıyla Berat, sadece bir eşlik değil – gerçek bir bağ kurmayı seven biri. "Uğur Böceği" lakabı boşuna değil: Yanında olduğunuzda şansınız döner, kalp atışlarınız hızlanır.</p>
       <p>Romantik akşam yemeklerinden derin sohbetlere, sakin yürüyüşlerden tutkulu anlara... Her buluşma, sıradanlıktan uzak, özel ve samimi bir ilişki deneyimi sunar. Gizlilik esastır, duygular ön plandadır.</p>
       <div class="quote">"Bir bakışta anlarım ne istediğini... ve onu sana hissettiririm."</div>
     </div>
@@ -226,6 +246,15 @@
     </footer>
 
   </div>
+<!-- WhatsApp Butonu (sadece bu kısım değişti) -->
+  <a 
+    href="https://wa.me/905545634452?text=Merhaba%2C%20siteden%20ula%C5%9F%C4%B1yorum.%20Berat%20'U%C4%9Fur%20B%C3%B6ce%C4%9Fi'%20ile%20ilgili%20bilgi%20almak%20istiyorum%20🥰" 
+    class="whatsapp-btn" 
+    target="_blank"
+    title="WhatsApp ile iletişime geç"
+  >
+    <span>💬</span>
+  </a>
 
 </body>
 </html>
