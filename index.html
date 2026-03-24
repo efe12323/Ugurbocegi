@@ -1,9 +1,380 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<h1  > kapalıyız☺️</h1>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UğurBöceğiHub</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background: #0f0f0f;
+            color: #fff;
+        }
+        
+        header {
+            background: #000;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(255,0,0,0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 26px;
+            font-weight: 700;
+            color: #ff0000;
+        }
+        
+        .logo img {
+            height: 52px;
+            filter: drop-shadow(0 0 8px #ff0000);
+        }
+        
+        .search {
+            flex: 1;
+            max-width: 580px;
+            margin: 0 25px;
+            padding: 13px 22px;
+            border-radius: 40px;
+            border: none;
+            background: #272727;
+            color: #fff;
+            font-size: 16px;
+        }
+        
+        .nav a {
+            color: #fff;
+            margin: 0 18px;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .nav a:hover, .nav a.active {
+            color: #ff0000;
+        }
+        
+        .container { 
+            padding: 25px 20px; 
+            max-width: 1400px; 
+            margin: 0 auto; 
+        }
+        
+        .section-title {
+            font-size: 28px;
+            margin: 35px 0 20px;
+            color: #ff0000;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+        
+        .video-card {
+            background: #1f1f1f;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .video-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(255,0,0,0.3);
+        }
+        
+        .thumbnail { width: 100%; height: 158px; object-fit: cover; }
+        .info { padding: 14px; }
+        .title { font-size: 16.5px; margin: 0 0 8px; line-height: 1.35; font-weight: 500; }
+        .desc { font-size: 13.8px; color: #aaa; }
+        
+        .shorts-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 18px;
+            padding: 15px 0;
+            scroll-snap-type: x mandatory;
+        }
+        
+        .short-card {
+            min-width: 190px;
+            background: #1f1f1f;
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .short-thumb { width: 100%; height: 340px; object-fit: cover; }
+        
+        /* Players */
+        .video-player-page, .shorts-player {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #000;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .player-container {
+            max-width: 1100px;
+            width: 95%;
+            padding: 20px;
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #333;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        iframe { width: 100%; height: 620px; border: none; border-radius: 12px; }
+        
+        .shorts-player-content {
+            width: 100%;
+            max-width: 420px;
+            height: 100vh;
+        }
+        
+        .shorts-player iframe { height: 100%; }
+        
+        /* Admin Login */
+        .admin-login {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #1f1f1f;
+            padding: 40px 35px;
+            border-radius: 16px;
+            box-shadow: 0 0 50px rgba(255,0,0,0.6);
+            width: 340px;
+            text-align: center;
+            z-index: 10000;
+            display: none;
+        }
+        
+        .admin-login input {
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border: none;
+            background: #333;
+            color: white;
+            font-size: 16px;
+        }
+        
+        .admin-login button {
+            width: 100%;
+            padding: 15px;
+            background: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        @media (max-width: 768px) {
+            .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+            iframe { height: 520px; }
+            .short-thumb { height: 300px; }
+        }
+    </style>
+</head>
+<body>
 
+<header>
+    <div class="logo">
+        <img src="https://i.imgur.com/9nUdQ.png" alt="Uğur Böceği Logo">  <!-- Kırmızı uğur böceği -->
+        UğurBöceğiHub
+    </div>
+    <input type="text" class="search" id="search-input" placeholder="Video veya Shorts ara..." onkeyup="searchContent()">
+    
+    <div class="nav">
+        <a onclick="switchTab(0)" class="active" id="tab-videos">Videolar</a>
+        <a onclick="switchTab(1)" id="tab-shorts">Shorts</a>
+        <a onclick="showAdminLogin()">Admin</a>
+    </div>
+</header>
 
+<div class="container">
+    <!-- Videolar Sekmesi -->
+    <div id="videos-section">
+        <h2 class="section-title">Öne Çıkan Videolar</h2>
+        <div class="grid" id="videos-grid"></div>
+    </div>
+    
+    <!-- Shorts Sekmesi -->
+    <div id="shorts-section" style="display:none;">
+        <h2 class="section-title">Shorts</h2>
+        <div class="shorts-container" id="shorts-row"></div>
+    </div>
+</div>
 
+<!-- Normal Video Player -->
+<div class="video-player-page" id="video-player">
+    <div class="player-container">
+        <button class="close-btn" onclick="closePlayer()">✕ Kapat</button>
+        <h1 id="player-title"></h1>
+        <iframe id="player-iframe" allowfullscreen></iframe>
+        <p id="player-desc" style="margin-top:25px; color:#ddd; font-size:17px;"></p>
+    </div>
+</div>
+
+<!-- Shorts Player -->
+<div class="shorts-player" id="shorts-player">
+    <div class="shorts-player-content">
+        <button class="close-btn" onclick="closeShortsPlayer()">✕</button>
+        <iframe id="shorts-iframe" allowfullscreen allow="autoplay"></iframe>
+    </div>
+</div>
+
+<!-- Admin Login -->
+<div class="admin-login" id="admin-login">
+    <h2>🔐 Admin Girişi</h2>
+    <input type="password" id="admin-pass" placeholder="Şifreyi girin">
+    <button onclick="checkAdminPassword()">Giriş Yap</button>
+    <p style="margin-top:20px; color:#888; font-size:14px;">Şifre: ugurbocagi2026</p>
+</div>
+
+<script>
+const API_BASE = "https://casinobet.pythonanywhere.com";
+let allVideos = [];
+let allShorts = [];
+let currentTab = 0;
+
+async function loadData() {
+    try {
+        const res = await fetch(`${API_BASE}/api/videos`);
+        const data = await res.json();
+        allVideos = data.videos || [];
+        allShorts = data.shorts || [];
+        renderVideos();
+        renderShorts();
+    } catch(e) {
+        alert("Backend bağlantı hatası! API linkini kontrol et.");
+    }
+}
+
+function renderVideos(filtered = null) {
+    const grid = document.getElementById('videos-grid');
+    grid.innerHTML = '';
+    const list = filtered || allVideos;
+    list.forEach(v => {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.innerHTML = `
+            <img src="${v.thumbnail || 'https://via.placeholder.com/280x158/1f1f1f/ff0000?text=Video'}" class="thumbnail">
+            <div class="info">
+                <div class="title">${v.title}</div>
+                <div class="desc">${(v.description || '').substring(0,90)}...</div>
+            </div>
+        `;
+        card.onclick = () => playNormalVideo(v);
+        grid.appendChild(card);
+    });
+}
+
+function renderShorts() {
+    const container = document.getElementById('shorts-row');
+    container.innerHTML = '';
+    allShorts.forEach(s => {
+        const card = document.createElement('div');
+        card.className = 'short-card';
+        card.innerHTML = `
+            <img src="${s.thumbnail || 'https://via.placeholder.com/190x340/1f1f1f/ff0000?text=Short'}" class="short-thumb">
+            <div style="padding:12px; font-size:15px; font-weight:500;">${s.title}</div>
+        `;
+        card.onclick = () => playShorts(s);
+        container.appendChild(card);
+    });
+}
+
+function playNormalVideo(video) {
+    document.getElementById('player-title').textContent = video.title;
+    document.getElementById('player-desc').textContent = video.description || '';
+    document.getElementById('player-iframe').src = video.url;
+    document.getElementById('video-player').style.display = 'flex';
+}
+
+function closePlayer() {
+    document.getElementById('video-player').style.display = 'none';
+    document.getElementById('player-iframe').src = '';
+}
+
+function playShorts(short) {
+    document.getElementById('shorts-iframe').src = short.url;
+    document.getElementById('shorts-player').style.display = 'flex';
+}
+
+function closeShortsPlayer() {
+    document.getElementById('shorts-player').style.display = 'none';
+    document.getElementById('shorts-iframe').src = '';
+}
+
+function searchContent() {
+    const term = document.getElementById('search-input').value.toLowerCase().trim();
+    if (!term) {
+        renderVideos();
+        renderShorts();
+        return;
+    }
+    const filteredVideos = allVideos.filter(v => 
+        v.title.toLowerCase().includes(term) || (v.description && v.description.toLowerCase().includes(term))
+    );
+    renderVideos(filteredVideos);
+}
+
+function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('tab-videos').classList.toggle('active', tab === 0);
+    document.getElementById('tab-shorts').classList.toggle('active', tab === 1);
+    
+    document.getElementById('videos-section').style.display = tab === 0 ? 'block' : 'none';
+    document.getElementById('shorts-section').style.display = tab === 1 ? 'block' : 'none';
+}
+
+function showAdminLogin() {
+    document.getElementById('admin-login').style.display = 'block';
+    document.getElementById('admin-pass').focus();
+}
+
+function checkAdminPassword() {
+    const pass = document.getElementById('admin-pass').value.trim();
+    if (pass === "ugurbocagi2026") {
+        alert("✅ Admin girişi başarılı!\n\nVideo eklemek için backend üzerinden devam edebilirsin.\nŞifre doğru, artık admin yetkisi var.");
+        document.getElementById('admin-login').style.display = 'none';
+        // İleride ayrı admin sayfası ekleyebiliriz
+    } else {
+        alert("❌ Yanlış şifre!");
+    }
+}
+
+window.onload = loadData;
+</script>
 </body>
-</html>
+          </html>
