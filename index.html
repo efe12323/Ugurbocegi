@@ -16,34 +16,25 @@
         
         header {
             background: #000;
-            padding: 12px 20px;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 2px 10px rgba(255,0,0,0.3);
         }
         
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 26px;
+        .logo-text {
+            font-size: 28px;
             font-weight: 700;
             color: #ff0000;
         }
         
-        .logo img {
-            height: 52px;
-            filter: drop-shadow(0 0 8px #ff0000);
-        }
-        
         .search {
             flex: 1;
-            max-width: 580px;
-            margin: 0 25px;
+            max-width: 600px;
+            margin: 0 30px;
             padding: 13px 22px;
             border-radius: 40px;
             border: none;
@@ -54,7 +45,7 @@
         
         .nav a {
             color: #fff;
-            margin: 0 18px;
+            margin: 0 20px;
             text-decoration: none;
             font-weight: 500;
             cursor: pointer;
@@ -105,7 +96,6 @@
             overflow-x: auto;
             gap: 18px;
             padding: 15px 0;
-            scroll-snap-type: x mandatory;
         }
         
         .short-card {
@@ -122,8 +112,7 @@
         .video-player-page, .shorts-player {
             display: none;
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            inset: 0;
             background: #000;
             z-index: 9999;
             align-items: center;
@@ -134,6 +123,7 @@
             max-width: 1100px;
             width: 95%;
             padding: 20px;
+            position: relative;
         }
         
         .close-btn {
@@ -157,36 +147,36 @@
             height: 100vh;
         }
         
-        .shorts-player iframe { height: 100%; }
-        
-        /* Admin Login */
-        .admin-login {
+        /* Admin Panel */
+        .admin-panel {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #1f1f1f;
-            padding: 40px 35px;
-            border-radius: 16px;
-            box-shadow: 0 0 50px rgba(255,0,0,0.6);
-            width: 340px;
-            text-align: center;
-            z-index: 10000;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
             display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
         }
         
-        .admin-login input {
+        .admin-content {
+            background: #1f1f1f;
+            padding: 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 420px;
+        }
+        
+        .admin-content input, .admin-content textarea {
             width: 100%;
-            padding: 15px;
-            margin: 15px 0;
+            padding: 14px;
+            margin: 10px 0;
             border-radius: 8px;
             border: none;
             background: #333;
             color: white;
-            font-size: 16px;
         }
         
-        .admin-login button {
+        .admin-content button {
             width: 100%;
             padding: 15px;
             background: #ff0000;
@@ -194,41 +184,34 @@
             border: none;
             border-radius: 8px;
             font-weight: bold;
-            font-size: 16px;
+            margin-top: 15px;
             cursor: pointer;
         }
         
         @media (max-width: 768px) {
             .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
             iframe { height: 520px; }
-            .short-thumb { height: 300px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">
-        <img src="https://i.imgur.com/9nUdQ.png" alt="Uğur Böceği Logo">  <!-- Kırmızı uğur böceği -->
-        UğurBöceğiHub
-    </div>
+    <div class="logo-text">UğurBöceğiHub</div>
     <input type="text" class="search" id="search-input" placeholder="Video veya Shorts ara..." onkeyup="searchContent()">
     
     <div class="nav">
         <a onclick="switchTab(0)" class="active" id="tab-videos">Videolar</a>
         <a onclick="switchTab(1)" id="tab-shorts">Shorts</a>
-        <a onclick="showAdminLogin()">Admin</a>
     </div>
 </header>
 
 <div class="container">
-    <!-- Videolar Sekmesi -->
     <div id="videos-section">
         <h2 class="section-title">Öne Çıkan Videolar</h2>
         <div class="grid" id="videos-grid"></div>
     </div>
     
-    <!-- Shorts Sekmesi -->
     <div id="shorts-section" style="display:none;">
         <h2 class="section-title">Shorts</h2>
         <div class="shorts-container" id="shorts-row"></div>
@@ -253,12 +236,18 @@
     </div>
 </div>
 
-<!-- Admin Login -->
-<div class="admin-login" id="admin-login">
-    <h2>🔐 Admin Girişi</h2>
-    <input type="password" id="admin-pass" placeholder="Şifreyi girin">
-    <button onclick="checkAdminPassword()">Giriş Yap</button>
-    <p style="margin-top:20px; color:#888; font-size:14px;">Şifre: ugurbocagi2026</p>
+<!-- Admin Panel (Sadece #admin ile açılır) -->
+<div class="admin-panel" id="admin-panel">
+    <div class="admin-content">
+        <h2 style="color:#ff0000;">Admin Panel - Video Ekle</h2>
+        <input type="text" id="admin-title" placeholder="Video Başlığı">
+        <textarea id="admin-desc" rows="3" placeholder="Açıklama"></textarea>
+        <input type="text" id="admin-url" placeholder="YouTube Linki (otomatik embed olur)">
+        <input type="text" id="admin-thumb" placeholder="Thumbnail URL (opsiyonel)">
+        <label style="color:#ccc;"><input type="checkbox" id="admin-is-short"> Shorts olarak ekle</label>
+        <button onclick="addVideo()">Videoyu Yükle</button>
+        <button onclick="closeAdminPanel()" style="background:#555; margin-top:8px;">Kapat</button>
+    </div>
 </div>
 
 <script>
@@ -276,15 +265,14 @@ async function loadData() {
         renderVideos();
         renderShorts();
     } catch(e) {
-        alert("Backend bağlantı hatası! API linkini kontrol et.");
+        console.error(e);
     }
 }
 
 function renderVideos(filtered = null) {
     const grid = document.getElementById('videos-grid');
     grid.innerHTML = '';
-    const list = filtered || allVideos;
-    list.forEach(v => {
+    (filtered || allVideos).forEach(v => {
         const card = document.createElement('div');
         card.className = 'video-card';
         card.innerHTML = `
@@ -314,10 +302,10 @@ function renderShorts() {
     });
 }
 
-function playNormalVideo(video) {
-    document.getElementById('player-title').textContent = video.title;
-    document.getElementById('player-desc').textContent = video.description || '';
-    document.getElementById('player-iframe').src = video.url;
+function playNormalVideo(v) {
+    document.getElementById('player-title').textContent = v.title;
+    document.getElementById('player-desc').textContent = v.description || '';
+    document.getElementById('player-iframe').src = v.url;
     document.getElementById('video-player').style.display = 'flex';
 }
 
@@ -326,8 +314,8 @@ function closePlayer() {
     document.getElementById('player-iframe').src = '';
 }
 
-function playShorts(short) {
-    document.getElementById('shorts-iframe').src = short.url;
+function playShorts(s) {
+    document.getElementById('shorts-iframe').src = s.url;
     document.getElementById('shorts-player').style.display = 'flex';
 }
 
@@ -339,42 +327,101 @@ function closeShortsPlayer() {
 function searchContent() {
     const term = document.getElementById('search-input').value.toLowerCase().trim();
     if (!term) {
-        renderVideos();
-        renderShorts();
-        return;
+        renderVideos(); return;
     }
-    const filteredVideos = allVideos.filter(v => 
+    const filtered = allVideos.filter(v => 
         v.title.toLowerCase().includes(term) || (v.description && v.description.toLowerCase().includes(term))
     );
-    renderVideos(filteredVideos);
+    renderVideos(filtered);
 }
 
 function switchTab(tab) {
     currentTab = tab;
     document.getElementById('tab-videos').classList.toggle('active', tab === 0);
     document.getElementById('tab-shorts').classList.toggle('active', tab === 1);
-    
     document.getElementById('videos-section').style.display = tab === 0 ? 'block' : 'none';
     document.getElementById('shorts-section').style.display = tab === 1 ? 'block' : 'none';
 }
 
-function showAdminLogin() {
-    document.getElementById('admin-login').style.display = 'block';
-    document.getElementById('admin-pass').focus();
+function showAdmin() {
+    document.getElementById('admin-panel').style.display = 'flex';
 }
 
-function checkAdminPassword() {
-    const pass = document.getElementById('admin-pass').value.trim();
-    if (pass === "ugurbocagi2026") {
-        alert("✅ Admin girişi başarılı!\n\nVideo eklemek için backend üzerinden devam edebilirsin.\nŞifre doğru, artık admin yetkisi var.");
-        document.getElementById('admin-login').style.display = 'none';
-        // İleride ayrı admin sayfası ekleyebiliriz
-    } else {
-        alert("❌ Yanlış şifre!");
+function closeAdminPanel() {
+    document.getElementById('admin-panel').style.display = 'none';
+}
+
+async function addVideo() {
+    const password = prompt("Admin Şifresi:");
+    if (!password) return;
+
+    const title = document.getElementById('admin-title').value.trim();
+    const desc = document.getElementById('admin-desc').value.trim();
+    let url = document.getElementById('admin-url').value.trim();
+    const thumb = document.getElementById('admin-thumb').value.trim();
+    const isShort = document.getElementById('admin-is-short').checked;
+
+    if (!title || !url) {
+        alert("Başlık ve link zorunlu!");
+        return;
+    }
+
+    // YouTube linkini otomatik embed yap
+    if (url.includes("youtube.com/watch?v=")) {
+        const id = url.split("v=")[1].split("&")[0];
+        url = `https://www.youtube.com/embed/${id}`;
+    } else if (url.includes("youtu.be/")) {
+        const id = url.split("youtu.be/")[1].split("?")[0];
+        url = `https://www.youtube.com/embed/${id}`;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE}/api/add_video`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                password: password,
+                title: title,
+                description: desc,
+                url: url,
+                thumbnail: thumb || `https://via.placeholder.com/320x180/ff0000/fff?text=${title.substring(0,10)}`,
+                is_short: isShort
+            })
+        });
+
+        const result = await res.json();
+        if (result.success) {
+            alert("✅ Video başarıyla eklendi!");
+            closeAdminPanel();
+            loadData(); // sayfayı yenile
+            // form temizle
+            document.getElementById('admin-title').value = '';
+            document.getElementById('admin-desc').value = '';
+            document.getElementById('admin-url').value = '';
+            document.getElementById('admin-thumb').value = '';
+        } else {
+            alert("❌ Hata: " + (result.error || "Şifre yanlış veya sorun var"));
+        }
+    } catch(e) {
+        alert("Bağlantı hatası!");
     }
 }
 
-window.onload = loadData;
+// URL'de #admin varsa admin paneli aç
+window.onload = () => {
+    loadData();
+    
+    if (window.location.hash === '#admin' || window.location.hash === '#/admin') {
+        showAdmin();
+    }
+    
+    // Hash değişirse de kontrol et
+    window.addEventListener('hashchange', () => {
+        if (window.location.hash === '#admin' || window.location.hash === '#/admin') {
+            showAdmin();
+        }
+    });
+};
 </script>
 </body>
-          </html>
+</html>
