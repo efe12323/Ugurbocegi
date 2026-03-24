@@ -6,192 +6,33 @@
     <title>UğurBöceğiHub</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
-        
-        body {
-            margin: 0;
-            font-family: 'Roboto', sans-serif;
-            background: #0f0f0f;
-            color: #fff;
-        }
-        
-        header {
-            background: #000;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-        
-        .logo-text {
-            font-size: 28px;
-            font-weight: 700;
-            color: #ff0000;
-        }
-        
-        .search {
-            flex: 1;
-            max-width: 600px;
-            margin: 0 30px;
-            padding: 13px 22px;
-            border-radius: 40px;
-            border: none;
-            background: #272727;
-            color: #fff;
-            font-size: 16px;
-        }
-        
-        .nav a {
-            color: #fff;
-            margin: 0 20px;
-            text-decoration: none;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        
-        .nav a:hover, .nav a.active {
-            color: #ff0000;
-        }
-        
-        .container { 
-            padding: 25px 20px; 
-            max-width: 1400px; 
-            margin: 0 auto; 
-        }
-        
-        .section-title {
-            font-size: 28px;
-            margin: 35px 0 20px;
-            color: #ff0000;
-        }
-        
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 24px;
-        }
-        
-        .video-card {
-            background: #1f1f1f;
-            border-radius: 12px;
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .video-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(255,0,0,0.3);
-        }
-        
-        .thumbnail { width: 100%; height: 158px; object-fit: cover; }
-        .info { padding: 14px; }
-        .title { font-size: 16.5px; margin: 0 0 8px; line-height: 1.35; font-weight: 500; }
-        .desc { font-size: 13.8px; color: #aaa; }
-        
-        .shorts-container {
-            display: flex;
-            overflow-x: auto;
-            gap: 18px;
-            padding: 15px 0;
-        }
-        
-        .short-card {
-            min-width: 190px;
-            background: #1f1f1f;
-            border-radius: 14px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        
-        .short-thumb { width: 100%; height: 340px; object-fit: cover; }
-        
-        /* Players */
-        .video-player-page, .shorts-player {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 9999;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .player-container {
-            max-width: 1100px;
-            width: 95%;
-            padding: 20px;
-            position: relative;
-        }
-        
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            background: #333;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        
-        iframe { width: 100%; height: 620px; border: none; border-radius: 12px; }
-        
-        .shorts-player-content {
-            width: 100%;
-            max-width: 420px;
-            height: 100vh;
-        }
-        
-        /* Admin Panel */
-        .admin-panel {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10000;
-        }
-        
-        .admin-content {
-            background: #1f1f1f;
-            padding: 30px;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 420px;
-        }
-        
-        .admin-content input, .admin-content textarea {
-            width: 100%;
-            padding: 14px;
-            margin: 10px 0;
-            border-radius: 8px;
-            border: none;
-            background: #333;
-            color: white;
-        }
-        
-        .admin-content button {
-            width: 100%;
-            padding: 15px;
-            background: #ff0000;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            margin-top: 15px;
-            cursor: pointer;
-        }
-        
-        @media (max-width: 768px) {
-            .grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
-            iframe { height: 520px; }
-        }
+        body { margin:0; font-family:'Roboto',sans-serif; background:#0f0f0f; color:#fff; }
+        header { background:#000; padding:15px 20px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+        .logo-text { font-size:28px; font-weight:700; color:#ff0000; }
+        .search { flex:1; max-width:600px; margin:0 30px; padding:13px 22px; border-radius:40px; border:none; background:#272727; color:#fff; font-size:16px; }
+        .nav a { color:#fff; margin:0 20px; text-decoration:none; font-weight:500; cursor:pointer; }
+        .nav a:hover, .nav a.active { color:#ff0000; }
+        .container { padding:25px 20px; max-width:1400px; margin:0 auto; }
+        .section-title { font-size:28px; margin:35px 0 20px; color:#ff0000; }
+        .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:24px; }
+        .video-card { background:#1f1f1f; border-radius:12px; overflow:hidden; cursor:pointer; transition:0.3s; }
+        .video-card:hover { transform:translateY(-8px); box-shadow:0 15px 30px rgba(255,0,0,0.3); }
+        .thumbnail { width:100%; height:158px; object-fit:cover; }
+        .info { padding:14px; }
+        .title { font-size:16.5px; margin:0 0 8px; line-height:1.35; font-weight:500; }
+        .desc { font-size:13.8px; color:#aaa; }
+        .shorts-container { display:flex; overflow-x:auto; gap:18px; padding:15px 0; }
+        .short-card { min-width:190px; background:#1f1f1f; border-radius:14px; overflow:hidden; cursor:pointer; }
+        .short-thumb { width:100%; height:340px; object-fit:cover; }
+        .video-player-page, .shorts-player { display:none; position:fixed; inset:0; background:#000; z-index:9999; align-items:center; justify-content:center; }
+        .player-container { max-width:1100px; width:95%; padding:20px; position:relative; }
+        .close-btn { position:absolute; top:20px; right:30px; background:#333; color:white; border:none; padding:12px 25px; border-radius:50px; font-size:18px; cursor:pointer; }
+        iframe { width:100%; height:620px; border:none; border-radius:12px; }
+        .shorts-player-content { width:100%; max-width:420px; height:100vh; }
+        .admin-panel { position:fixed; inset:0; background:rgba(0,0,0,0.95); display:none; align-items:center; justify-content:center; z-index:10000; }
+        .admin-content { background:#1f1f1f; padding:30px; border-radius:16px; width:90%; max-width:450px; }
+        .admin-content input, .admin-content textarea { width:100%; padding:14px; margin:10px 0; border-radius:8px; border:none; background:#333; color:white; }
+        .admin-content button { width:100%; padding:15px; background:#ff0000; color:white; border:none; border-radius:8px; font-weight:bold; margin-top:10px; cursor:pointer; }
     </style>
 </head>
 <body>
@@ -199,7 +40,6 @@
 <header>
     <div class="logo-text">UğurBöceğiHub</div>
     <input type="text" class="search" id="search-input" placeholder="Video veya Shorts ara..." onkeyup="searchContent()">
-    
     <div class="nav">
         <a onclick="switchTab(0)" class="active" id="tab-videos">Videolar</a>
         <a onclick="switchTab(1)" id="tab-shorts">Shorts</a>
@@ -211,14 +51,13 @@
         <h2 class="section-title">Öne Çıkan Videolar</h2>
         <div class="grid" id="videos-grid"></div>
     </div>
-    
     <div id="shorts-section" style="display:none;">
         <h2 class="section-title">Shorts</h2>
         <div class="shorts-container" id="shorts-row"></div>
     </div>
 </div>
 
-<!-- Normal Video Player -->
+<!-- Video Player -->
 <div class="video-player-page" id="video-player">
     <div class="player-container">
         <button class="close-btn" onclick="closePlayer()">✕ Kapat</button>
@@ -239,33 +78,32 @@
 <!-- Admin Panel (Sadece #admin ile açılır) -->
 <div class="admin-panel" id="admin-panel">
     <div class="admin-content">
-        <h2 style="color:#ff0000;">Admin Panel - Video Ekle</h2>
+        <h2 style="color:#ff0000;">Video Ekle</h2>
         <input type="text" id="admin-title" placeholder="Video Başlığı">
         <textarea id="admin-desc" rows="3" placeholder="Açıklama"></textarea>
-        <input type="text" id="admin-url" placeholder="YouTube Linki (otomatik embed olur)">
+        <input type="text" id="admin-url" placeholder="Video URL (YouTube embed veya mp4 link)">
         <input type="text" id="admin-thumb" placeholder="Thumbnail URL (opsiyonel)">
         <label style="color:#ccc;"><input type="checkbox" id="admin-is-short"> Shorts olarak ekle</label>
-        <button onclick="addVideo()">Videoyu Yükle</button>
+        <button onclick="addVideoLocal()">JSON Kopyala (data.json'a yapıştır)</button>
         <button onclick="closeAdminPanel()" style="background:#555; margin-top:8px;">Kapat</button>
     </div>
 </div>
 
 <script>
-const API_BASE = "https://casinobet.pythonanywhere.com";
 let allVideos = [];
 let allShorts = [];
-let currentTab = 0;
 
 async function loadData() {
     try {
-        const res = await fetch(`${API_BASE}/api/videos`);
+        const res = await fetch('./data.json');
         const data = await res.json();
         allVideos = data.videos || [];
         allShorts = data.shorts || [];
         renderVideos();
         renderShorts();
     } catch(e) {
-        console.error(e);
+        console.error("data.json yüklenemedi", e);
+        alert("data.json dosyası aynı klasörde olmalı!");
     }
 }
 
@@ -276,7 +114,7 @@ function renderVideos(filtered = null) {
         const card = document.createElement('div');
         card.className = 'video-card';
         card.innerHTML = `
-            <img src="${v.thumbnail || 'https://via.placeholder.com/280x158/1f1f1f/ff0000?text=Video'}" class="thumbnail">
+            <img src="${v.thumbnail || 'https://via.placeholder.com/280x158/ff0000/fff?text=Video'}" class="thumbnail">
             <div class="info">
                 <div class="title">${v.title}</div>
                 <div class="desc">${(v.description || '').substring(0,90)}...</div>
@@ -294,7 +132,7 @@ function renderShorts() {
         const card = document.createElement('div');
         card.className = 'short-card';
         card.innerHTML = `
-            <img src="${s.thumbnail || 'https://via.placeholder.com/190x340/1f1f1f/ff0000?text=Short'}" class="short-thumb">
+            <img src="${s.thumbnail || 'https://via.placeholder.com/190x340/ff0000/fff?text=Short'}" class="short-thumb">
             <div style="padding:12px; font-size:15px; font-weight:500;">${s.title}</div>
         `;
         card.onclick = () => playShorts(s);
@@ -326,9 +164,7 @@ function closeShortsPlayer() {
 
 function searchContent() {
     const term = document.getElementById('search-input').value.toLowerCase().trim();
-    if (!term) {
-        renderVideos(); return;
-    }
+    if (!term) { renderVideos(); return; }
     const filtered = allVideos.filter(v => 
         v.title.toLowerCase().includes(term) || (v.description && v.description.toLowerCase().includes(term))
     );
@@ -336,25 +172,16 @@ function searchContent() {
 }
 
 function switchTab(tab) {
-    currentTab = tab;
     document.getElementById('tab-videos').classList.toggle('active', tab === 0);
     document.getElementById('tab-shorts').classList.toggle('active', tab === 1);
     document.getElementById('videos-section').style.display = tab === 0 ? 'block' : 'none';
     document.getElementById('shorts-section').style.display = tab === 1 ? 'block' : 'none';
 }
 
-function showAdmin() {
-    document.getElementById('admin-panel').style.display = 'flex';
-}
+function showAdmin() { document.getElementById('admin-panel').style.display = 'flex'; }
+function closeAdminPanel() { document.getElementById('admin-panel').style.display = 'none'; }
 
-function closeAdminPanel() {
-    document.getElementById('admin-panel').style.display = 'none';
-}
-
-async function addVideo() {
-    const password = prompt("Admin Şifresi:");
-    if (!password) return;
-
+function addVideoLocal() {
     const title = document.getElementById('admin-title').value.trim();
     const desc = document.getElementById('admin-desc').value.trim();
     let url = document.getElementById('admin-url').value.trim();
@@ -362,7 +189,7 @@ async function addVideo() {
     const isShort = document.getElementById('admin-is-short').checked;
 
     if (!title || !url) {
-        alert("Başlık ve link zorunlu!");
+        alert("Başlık ve URL zorunlu!");
         return;
     }
 
@@ -375,52 +202,31 @@ async function addVideo() {
         url = `https://www.youtube.com/embed/${id}`;
     }
 
-    try {
-        const res = await fetch(`${API_BASE}/api/add_video`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                password: password,
-                title: title,
-                description: desc,
-                url: url,
-                thumbnail: thumb || `https://via.placeholder.com/320x180/ff0000/fff?text=${title.substring(0,10)}`,
-                is_short: isShort
-            })
-        });
+    const newVideo = {
+        id: Date.now(),
+        title: title,
+        description: desc,
+        url: url,
+        thumbnail: thumb || `https://via.placeholder.com/320x180/ff0000/fff?text=${title.substring(0,10)}`,
+        is_short: isShort
+    };
 
-        const result = await res.json();
-        if (result.success) {
-            alert("✅ Video başarıyla eklendi!");
-            closeAdminPanel();
-            loadData(); // sayfayı yenile
-            // form temizle
-            document.getElementById('admin-title').value = '';
-            document.getElementById('admin-desc').value = '';
-            document.getElementById('admin-url').value = '';
-            document.getElementById('admin-thumb').value = '';
-        } else {
-            alert("❌ Hata: " + (result.error || "Şifre yanlış veya sorun var"));
-        }
-    } catch(e) {
-        alert("Bağlantı hatası!");
-    }
+    const jsonStr = JSON.stringify(newVideo, null, 4);
+    navigator.clipboard.writeText(jsonStr).then(() => {
+        alert("✅ Video JSON kopyalandı!\n\nŞimdi data.json dosyasını aç.\n\"videos\" veya \"shorts\" array'ine bu nesneyi ekle (virgül koymayı unutma).\nSonra sayfayı yenile (F5).");
+    }).catch(() => {
+        alert("JSON kopyalanamadı. Aşağıdaki metni manuel kopyala:\n\n" + jsonStr);
+    });
+
+    closeAdminPanel();
 }
 
-// URL'de #admin varsa admin paneli aç
+// Sayfa yüklendiğinde
 window.onload = () => {
     loadData();
-    
-    if (window.location.hash === '#admin' || window.location.hash === '#/admin') {
+    if (window.location.hash.includes('admin')) {
         showAdmin();
     }
-    
-    // Hash değişirse de kontrol et
-    window.addEventListener('hashchange', () => {
-        if (window.location.hash === '#admin' || window.location.hash === '#/admin') {
-            showAdmin();
-        }
-    });
 };
 </script>
 </body>
