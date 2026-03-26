@@ -2,144 +2,111 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Otomatik Altyazı Pro</title>
-    <script src="https://cdn.jsdelivr.net/npm/@xenova/transformers@2.6.0"></script>
+    <title>Jet Altyazı Creator</title>
     <style>
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Arial Black', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-        }
-
-        .video-wrapper {
+        body { background: #000; color: white; font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        
+        .preview-area {
             position: relative;
-            width: 320px;
-            height: 568px;
+            width: 350px;
+            height: 600px;
             background: #111;
-            border-radius: 15px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
         }
 
         video { width: 100%; height: 100%; object-fit: cover; }
 
-        #subtitle-box {
+        /* VİDEODAKİ O MEŞHUR STİL */
+        #caption-overlay {
             position: absolute;
-            bottom: 25%;
+            top: 50%; /* Yazıyı tam ortaya çektim, Shorts tarzı */
             width: 100%;
             text-align: center;
-            z-index: 10;
             pointer-events: none;
-            padding: 0 10px;
-            box-sizing: border-box;
+            z-index: 100;
         }
 
-        /* SOMUNCU BABA VİDEOSUNDAKİ STİL */
-        .caption {
-            font-size: 2.8rem;
+        .highlight-text {
+            font-size: 3.5rem;
             font-weight: 900;
             text-transform: uppercase;
-            line-height: 1.1;
+            color: #fbbf24; /* Sarı vurgu */
+            text-shadow: 4px 4px 0px #000;
             display: inline-block;
-            filter: drop-shadow(4px 4px 0px #000);
+            animation: pop 0.2s ease-out;
         }
 
-        .word { display: inline-block; margin: 0 4px; color: #fff; }
-        .highlight { color: #facc15; transform: scale(1.2) rotate(-3deg); }
+        @keyframes pop {
+            0% { transform: scale(0.8); }
+            100% { transform: scale(1); }
+        }
 
-        .ui-panel { margin-top: 20px; text-align: center; background: #111; padding: 20px; border-radius: 10px; }
-        #progress { color: #38bdf8; font-family: monospace; margin-top: 10px; display: none; }
-        
-        input[type="file"] { margin-bottom: 10px; }
-        button { background: #38bdf8; border: none; padding: 10px 20px; border-radius: 5px; font-weight: bold; cursor: pointer; }
-        button:disabled { background: #444; }
+        .controls { margin-top: 20px; padding: 20px; background: #111; border-radius: 10px; }
+        button { background: #fbbf24; border: none; padding: 12px 25px; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        #status { margin-top: 10px; color: #888; font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
-    <div class="video-wrapper">
-        <video id="player"></video>
-        <div id="subtitle-box"></div>
+    <div class="preview-area">
+        <video id="vid" playsinline></video>
+        <div id="caption-overlay"><span id="word" class="highlight-text"></span></div>
     </div>
 
-    <div class="ui-panel">
-        <input type="file" id="upload" accept="video/*">
-        <br>
-        <button id="processBtn">VİDEOYU ANALİZ ET (AI)</button>
-        <div id="progress">Yapay Zeka Hazırlanıyor...</div>
+    <div class="controls">
+        <input type="file" id="up" accept="video/*">
+        <button id="btn">ALTYAZI ÜRET</button>
+        <div id="status">Hazır. Dosya seç ve başlat.</div>
     </div>
 
-    <script type="module">
-        const upload = document.getElementById('upload');
-        const player = document.getElementById('player');
-        const processBtn = document.getElementById('processBtn');
-        const progress = document.getElementById('progress');
-        const subtitleBox = document.getElementById('subtitle-box');
+    <script>
+        const vid = document.getElementById('vid');
+        const wordBox = document.getElementById('word');
+        const btn = document.getElementById('btn');
+        const up = document.getElementById('up');
+        const status = document.getElementById('status');
 
-        let pipeline;
+        const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Recognition) alert("Tarayıcınız bu sistemi desteklemiyor. Lütfen Chrome kullanın.");
 
-        // 1. AI Modelini Yükle (OpenAI Whisper Tiny)
-        async function initAI() {
-            progress.style.display = "block";
-            progress.innerText = "Yapay Zeka Modeli İndiriliyor (Yaklaşık 40MB)...";
-            pipeline = await window.Transformers.pipeline('automatic-speech-recognition', 'Xenova/whisper-tiny');
-            progress.innerText = "Model Hazır! Dosya Seçin.";
-        }
+        const rec = new Recognition();
+        rec.continuous = true;
+        rec.interimResults = true;
+        rec.lang = 'tr-TR';
 
-        initAI();
+        up.onchange = (e) => {
+            vid.src = URL.createObjectURL(e.target.files[0]);
+            status.innerText = "Video yüklendi. 'Üret' butonuna bas.";
+        };
 
-        processBtn.onclick = async () => {
-            if (!upload.files[0]) return alert("Lütfen video seç!");
+        btn.onclick = () => {
+            vid.play();
+            rec.start();
+            status.innerText = "Yapay zeka sesi analiz ediyor...";
+        };
+
+        rec.onresult = (event) => {
+            let currentText = "";
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                currentText = event.results[i][0].transcript;
+            }
             
-            const file = upload.files[0];
-            const url = URL.createObjectURL(file);
-            player.src = url;
-
-            progress.innerText = "Ses Analiz Ediliyor... Lütfen Bekleyin.";
-            processBtn.disabled = true;
-
-            // 2. Ses Analizi ve Transkripsiyon
-            try {
-                const result = await pipeline(url, { 
-                    chunk_length_s: 30, 
-                    stride_length_s: 5,
-                    language: 'turkish',
-                    return_timestamps: 'word' 
-                });
-
-                window.subtitles = result.chunks; // Kelime zamanlarını kaydet
-                progress.innerText = "Analiz Tamamlandı! Videoyu Oynatın.";
-                processBtn.disabled = false;
-            } catch (e) {
-                console.error(e);
-                progress.innerText = "Hata oluştu! Lütfen tekrar deneyin.";
+            // Metni kelimelere böl ve sadece son kelimeyi büyük/sarı göster
+            const words = currentText.trim().split(" ");
+            const lastWord = words[words.length - 1];
+            
+            if(lastWord) {
+                wordBox.innerText = lastWord;
+                // Yazıyı her kelimede yeniden canlandır
+                wordBox.style.animation = 'none';
+                wordBox.offsetHeight; 
+                wordBox.style.animation = null;
             }
         };
 
-        // 3. Videoyu İzle ve Altyazıyı Bas
-        player.ontimeupdate = () => {
-            if (!window.subtitles) return;
-            
-            const time = player.currentTime;
-            // O anki kelimeyi bul
-            const currentChunk = window.subtitles.find(c => time >= c.timestamp[0] && time <= c.timestamp[1]);
-
-            if (currentChunk) {
-                subtitleBox.innerHTML = `
-                    <div class="caption">
-                        <span class="word highlight">${currentChunk.text.trim()}</span>
-                    </div>`;
-            } else {
-                subtitleBox.innerHTML = "";
-            }
-        };
+        rec.onend = () => { if(!vid.paused) rec.start(); }; // Video bitene kadar dinlemeyi kesme
     </script>
 </body>
 </html>
