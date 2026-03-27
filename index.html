@@ -2,29 +2,14 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Auto-Subtitle Editor</title>
+    <title>AI Subtitle Editor & Downloader</title>
     <style>
-        /* Modern Karanlık Tema */
-        :root {
-            --accent: #facc15; /* Sarı vurgu rengi */
-            --bg: #0a0a0a;
-            --panel: #161616;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: white;
-            font-family: 'Arial Black', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
-
-        /* Video Alanı (Shorts Formatı) */
+        :root { --accent: #facc15; --bg: #050505; --panel: #1a1a1a; }
+        body { background: var(--bg); color: white; font-family: 'Arial Black', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+        
+        /* EDITOR ALANI */
+        .main-layout { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; }
+        
         .preview-wrapper {
             position: relative;
             width: 340px;
@@ -32,206 +17,187 @@
             background: #000;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
-            border: 5px solid #1a1a1a;
+            border: 4px solid #333;
         }
+        video { width: 100%; height: 100%; object-fit: cover; }
 
-        video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* ALTYAZI TASARIMI (Somuncu Baba Stili) */
+        /* SÜRÜKLENEBİLİR ALTYAZI */
         #caption-overlay {
             position: absolute;
-            top: 45%; /* Ekranın ortasında */
+            top: 50%;
+            left: 0;
             width: 100%;
             text-align: center;
             z-index: 100;
-            pointer-events: none;
-            padding: 0 10px;
-            box-sizing: border-box;
+            cursor: move;
+            user-select: none;
+            touch-action: none;
         }
-
         .subtitle-word {
-            font-size: 3.5rem;
+            font-size: 3.2rem;
             font-weight: 900;
             text-transform: uppercase;
             color: white;
-            /* Yazı Konturu ve Gölgesi */
-            text-shadow: 4px 4px 0px #000, -2px -2px 0px #000, 2px -2px 0px #000;
+            text-shadow: 4px 4px 0px #000;
             -webkit-text-stroke: 1.5px black;
             display: inline-block;
-            transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
+        .active { color: var(--accent); transform: scale(1.2); }
 
-        .active {
-            color: var(--accent) !important;
-            transform: scale(1.2) rotate(-3deg);
-        }
-
-        /* Kontrol Paneli */
+        /* PANEL */
         .controls {
-            margin-top: 25px;
-            background: var(--panel);
-            padding: 25px;
-            border-radius: 15px;
             width: 340px;
-            box-sizing: border-box;
-            text-align: center;
+            background: var(--panel);
+            padding: 20px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
-
-        input[type="file"] {
-            margin-bottom: 20px;
-            font-size: 12px;
-            color: #888;
-        }
-
         button {
-            background: var(--accent);
-            color: black;
+            padding: 15px;
             border: none;
-            padding: 15px 25px;
             border-radius: 8px;
             font-weight: 900;
             cursor: pointer;
-            width: 100%;
             text-transform: uppercase;
-            transition: 0.3s;
         }
-
-        button:disabled {
-            background: #333;
-            color: #666;
-            cursor: not-allowed;
-        }
-
-        #status {
-            margin-top: 15px;
-            font-family: monospace;
-            font-size: 11px;
-            color: #38bdf8;
-        }
+        .btn-process { background: var(--accent); color: #000; }
+        .btn-download { background: #22c55e; color: #fff; display: none; }
+        #status { font-size: 12px; color: #38bdf8; font-family: monospace; text-align: center; }
     </style>
 </head>
 <body>
 
-    <div class="preview-wrapper">
-        <video id="vPlayer" playsinline></video>
-        <div id="caption-overlay">
-            <span id="wordBox" class="subtitle-word"></span>
+    <div class="main-layout">
+        <div class="preview-wrapper" id="captureArea">
+            <video id="vPlayer" crossOrigin="anonymous"></video>
+            <div id="caption-overlay">
+                <span id="wordBox" class="subtitle-word"></span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <h3 style="margin:0; color:var(--accent)">AI EDITOR</h3>
+            <input type="file" id="vUpload" accept="video/*">
+            <button id="processBtn" class="btn-process">ANALİZ ET</button>
+            <button id="downloadBtn" class="btn-download">ALTYAZILI VİDEOYU İNDİR</button>
+            <div id="status">Video yükleyin...</div>
+            <p style="font-size:10px; color:#666; margin:0">İpucu: Altyazıyı tutup istediğin yere sürükle!</p>
         </div>
     </div>
 
-    <div class="controls">
-        <input type="file" id="vUpload" accept="video/*">
-        <button id="processBtn">ALTYAZI OLUŞTUR VE BAŞLAT</button>
-        <div id="status">Video yüklenmesi bekleniyor...</div>
-    </div>
-
     <script>
-        // Senin AssemblyAI API Anahtarın
         const API_KEY = "549e51d96f844ac19b843caeba52e697";
-        
         const vPlayer = document.getElementById('vPlayer');
         const vUpload = document.getElementById('vUpload');
         const processBtn = document.getElementById('processBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
         const wordBox = document.getElementById('wordBox');
+        const overlay = document.getElementById('caption-overlay');
         const status = document.getElementById('status');
 
-        let wordsData = []; // API'den gelen kelime zamanlamaları
+        let wordsData = [];
+        let mediaRecorder;
+        let recordedChunks = [];
 
-        vUpload.onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                vPlayer.src = URL.createObjectURL(file);
-                status.innerText = "Video hazır. Analizi başlatabilirsin.";
+        // 1. SÜRÜKLE BIRAK SİSTEMİ
+        let isDragging = false;
+        overlay.onmousedown = (e) => isDragging = true;
+        window.onmouseup = () => isDragging = false;
+        window.onmousemove = (e) => {
+            if (!isDragging) return;
+            const rect = document.getElementById('captureArea').getBoundingClientRect();
+            let y = e.clientY - rect.top;
+            if (y > 0 && y < rect.height - 50) {
+                overlay.style.top = y + "px";
             }
         };
 
-        processBtn.onclick = async () => {
-            const file = vUpload.files[0];
-            if (!file) return alert("Lütfen önce bir video seç!");
+        // 2. DOSYA YÜKLEME
+        vUpload.onchange = (e) => {
+            vPlayer.src = URL.createObjectURL(e.target.files[0]);
+            status.innerText = "Video yüklendi.";
+        };
 
+        // 3. AI ANALİZ
+        processBtn.onclick = async () => {
+            if (!vUpload.files[0]) return alert("Video seç!");
             processBtn.disabled = true;
-            status.innerText = "1/3: Video yükleniyor...";
+            status.innerText = "AI Analiz Başladı...";
 
             try {
-                // 1. ADIM: Dosyayı AssemblyAI'ya yükle
                 const uploadRes = await fetch("https://api.assemblyai.com/v2/upload", {
                     method: "POST",
                     headers: { "authorization": API_KEY },
-                    body: file
+                    body: vUpload.files[0]
                 });
                 const { upload_url } = await uploadRes.json();
 
-                // 2. ADIM: Transkripsiyon işlemini başlat (Hata düzeltildi)
-                status.innerText = "2/3: Yapay zeka sesi analiz ediyor...";
                 const transRes = await fetch("https://api.assemblyai.com/v2/transcript", {
                     method: "POST",
-                    headers: { 
-                        "authorization": API_KEY, 
-                        "content-type": "application/json" 
-                    },
+                    headers: { "authorization": API_KEY, "content-type": "application/json" },
                     body: JSON.stringify({ 
                         audio_url: upload_url, 
                         language_detection: true,
-                        speech_models: ["universal-3-pro", "universal-2"] // Zorunlu parametreler eklendi
+                        speech_models: ["universal-3-pro", "universal-2"] 
                     })
                 });
                 const { id: transcriptId } = await transRes.json();
 
-                // 3. ADIM: Sonuç bitti mi diye kontrol et (Polling)
-                const checkInterval = setInterval(async () => {
-                    const pollRes = await fetch(`https://api.assemblyai.com/v2/transcript/${transcriptId}`, {
+                const check = setInterval(async () => {
+                    const poll = await (await fetch(`https://api.assemblyai.com/v2/transcript/${transcriptId}`, {
                         headers: { "authorization": API_KEY }
-                    });
-                    const pollResult = await pollRes.json();
+                    })).json();
 
-                    if (pollResult.status === 'completed') {
-                        clearInterval(checkInterval);
-                        wordsData = pollResult.words; // Kelime listesini al
-                        status.innerText = "3/3: Analiz Bitti! Oynatılıyor...";
+                    if (poll.status === 'completed') {
+                        clearInterval(check);
+                        wordsData = poll.words;
+                        status.innerText = "Analiz Bitti! Artık İndirebilirsin.";
                         processBtn.disabled = false;
+                        downloadBtn.style.display = "block";
                         vPlayer.play();
-                    } else if (pollResult.status === 'error') {
-                        clearInterval(checkInterval);
-                        status.innerText = "HATA: " + pollResult.error;
-                        processBtn.disabled = false;
-                    } else {
-                        status.innerText = "Analiz yapılıyor... Lütfen bekleyin.";
+                    } else if (poll.status === 'error') {
+                        clearInterval(check);
+                        status.innerText = "Hata!";
                     }
                 }, 3000);
-
-            } catch (err) {
-                console.error(err);
-                status.innerText = "Sistem hatası oluştu.";
-                processBtn.disabled = false;
-            }
+            } catch (e) { status.innerText = "Sistem Hatası!"; }
         };
 
-        // VİDEO OYNARKEN ALTYAZILARI GÜNCELLE
+        // 4. ALTYAZI GÜNCELLEME
         vPlayer.ontimeupdate = () => {
-            if (wordsData.length === 0) return;
-            
-            const currentTimeMs = vPlayer.currentTime * 1000;
-            // O anki zamana denk gelen kelimeyi bul
-            const currentWord = wordsData.find(w => currentTimeMs >= w.start && currentTimeMs <= w.end);
+            const time = vPlayer.currentTime * 1000;
+            const word = wordsData.find(w => time >= w.start && time <= w.end);
+            if (word) {
+                wordBox.innerText = word.text;
+                wordBox.classList.add('active');
+            } else { wordBox.innerText = ""; }
+        };
 
-            if (currentWord) {
-                if (wordBox.innerText !== currentWord.text) {
-                    wordBox.innerText = currentWord.text;
-                    wordBox.classList.add('active');
-                    
-                    // Animasyonu her yeni kelimede tetiklemek için sıfırla
-                    wordBox.style.animation = 'none';
-                    wordBox.offsetHeight; // Reflow tetikle
-                    wordBox.style.animation = null;
-                }
-            } else {
-                wordBox.innerText = "";
-            }
+        // 5. VİDEO İNDİRME SİSTEMİ (Record & Export)
+        downloadBtn.onclick = async () => {
+            status.innerText = "Video Hazırlanıyor... Lütfen bekleyin.";
+            vPlayer.currentTime = 0;
+            vPlayer.play();
+
+            const stream = document.getElementById('captureArea').captureStream(30);
+            mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+            recordedChunks = [];
+
+            mediaRecorder.ondataavailable = (e) => recordedChunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "altyazili_video.webm";
+                a.click();
+                status.innerText = "İndirme Başladı!";
+            };
+
+            mediaRecorder.start();
+            vPlayer.onended = () => mediaRecorder.stop();
         };
     </script>
 </body>
